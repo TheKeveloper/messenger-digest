@@ -4,7 +4,7 @@ export type LoadingState<T> =
   | LoadingState.Failed;
 
 export namespace LoadingState {
-  export type LoadingError = Exclude<any, undefined | null>;
+  export type LoadingError = NonNullable<{}>;
   export type Loading = {
     status: "loading";
   };
