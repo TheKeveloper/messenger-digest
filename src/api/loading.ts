@@ -1,10 +1,11 @@
 export type LoadingState<T> =
   | LoadingState.Loaded<T>
   | LoadingState.Loading
+  | LoadingState.Reloading<T>
   | LoadingState.Failed;
 
 export namespace LoadingState {
-  export type LoadingError = Exclude<any, undefined | null>;
+  export type LoadingError = NonNullable<{}>;
   export type Loading = {
     status: "loading";
   };
@@ -19,6 +20,11 @@ export namespace LoadingState {
     error: LoadingError;
   };
 
+  export type Reloading<T> = {
+    status: "reloading";
+    prev: T;
+  };
+
   export function getLoaded<T>(state: LoadingState<T>): T | undefined {
     if (state.status === "loaded") {
       return state.value;
@@ -26,8 +32,8 @@ export namespace LoadingState {
     return undefined;
   }
 
-  export function isLoading<T>(state: LoadingState<T>) {
-    return state.status === "loading";
+  export function getLoading<T>(state: LoadingState<T>): Loading | undefined {
+    return state.status === "loading" ? state : undefined;
   }
 
   export function getFailed<T>(
@@ -37,6 +43,14 @@ export namespace LoadingState {
       return state.error;
     }
     return undefined;
+  }
+
+  export function getReloading<T>(
+    state: LoadingState<T>
+  ): Reloading<T> | undefined {
+    if (state.status == "reloading") {
+      return state;
+    }
   }
 
   export function loading(): Loading {
@@ -51,10 +65,15 @@ export namespace LoadingState {
     return { status: "failed", error };
   }
 
+  export function reloading<T>(prev: T): Reloading<T> {
+    return { status: "reloading", prev };
+  }
+
   export interface Visitor<T, R> {
-    loaded: (value: T) => R;
-    loading: () => R;
-    failed: (error: LoadingError) => R;
+    loaded: (loaded: Loaded<T>) => R;
+    loading: (loading: Loading) => R;
+    failed: (failed: Failed) => R;
+    reloading: (reloading: Reloading<T>) => R;
   }
 
   export function visit<T, R>(
@@ -63,11 +82,13 @@ export namespace LoadingState {
   ): R {
     switch (state.status) {
       case "loading":
-        return visitor.loading();
+        return visitor.loading(state);
       case "loaded":
-        return visitor.loaded(state.value);
+        return visitor.loaded(state);
       case "failed":
-        return visitor.failed(state.error);
+        return visitor.failed(state);
+      case "reloading":
+        return visitor.reloading(state);
     }
   }
 }

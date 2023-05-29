@@ -1,14 +1,11 @@
 export namespace OpenAiConfiguration {
-  export const DEFAULT_CONFIGURATION: OpenAiConfiguration = {
-    apiKey: undefined,
-    organizationId: undefined,
-  };
+  export const DEFAULT_CONFIGURATION: OpenAiConfiguration = {};
 }
 /**
  * Configuration for the OpenAI API.
  */
 export interface OpenAiConfiguration {
-  apiKey: string | undefined;
+  apiKey?: string;
 
-  organizationId: string | undefined;
+  organizationId?: string;
 }
