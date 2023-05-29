@@ -29,7 +29,7 @@ export interface ErrorResponse {
  * A single messenger message including both the sender and the string contents of the message
  */
 export interface ChatMessage {
-  sender: string;
+  sender?: string;
   text: string;
 }
 
