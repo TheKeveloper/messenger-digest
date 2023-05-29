@@ -17,7 +17,7 @@ export type ContentResponse = MessagesResponse | ErrorResponse;
 
 export interface MessagesResponse {
   type: "messages";
-  messages: MessengerMessage[];
+  messages: ChatMessage[];
 }
 
 export interface ErrorResponse {
@@ -28,7 +28,7 @@ export interface ErrorResponse {
 /**
  * A single messenger message including both the sender and the string contents of the message
  */
-export interface MessengerMessage {
+export interface ChatMessage {
   sender: string;
   text: string;
 }

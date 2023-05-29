@@ -1,10 +1,10 @@
 import React, { useCallback, useState } from "react";
 import { createRoot } from "react-dom/client";
-import { MessengerMessage, sendRequestCurrentTab } from "./api/api";
+import { ChatMessage, sendRequestCurrentTab } from "./api/api";
 import { Button } from "@mui/material";
 
 const Popup = () => {
-  const [messages, setMessages] = useState<MessengerMessage[]>([]);
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
 
   const requestMessages = useCallback(async () => {
     try {
