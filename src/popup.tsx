@@ -1,51 +1,27 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { createRoot } from "react-dom/client";
+import { ChatMessage, sendRequestCurrentTab } from "./api/api";
+import { Button } from "@mui/material";
 
 const Popup = () => {
-  const [count, setCount] = useState(0);
-  const [currentURL, setCurrentURL] = useState<string>();
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
 
-  useEffect(() => {
-    chrome.action.setBadgeText({ text: count.toString() });
-  }, [count]);
-
-  useEffect(() => {
-    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-      setCurrentURL(tabs[0].url);
-    });
-  }, []);
-
-  const changeBackground = () => {
-    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-      const tab = tabs[0];
-      if (tab.id) {
-        chrome.tabs.sendMessage(
-          tab.id,
-          {
-            color: "#555555",
-          },
-          (msg) => {
-            console.log("result message:", msg);
-          }
-        );
+  const requestMessages = useCallback(async () => {
+    try {
+      const response = await sendRequestCurrentTab({ type: "messages" });
+      if (response != null && response.type === "messages"){
+        setMessages(response.messages);
       }
-    });
-  };
-
+    } catch (err) {
+      console.error("Error requesting messages", err);
+    }
+  }, [setMessages])
+  
   return (
-    <>
-      <ul style={{ minWidth: "700px" }}>
-        <li>Current URL: {currentURL}</li>
-        <li>Current Time: {new Date().toLocaleTimeString()}</li>
-      </ul>
-      <button
-        onClick={() => setCount(count + 1)}
-        style={{ marginRight: "5px" }}
-      >
-        count up
-      </button>
-      <button onClick={changeBackground}>change background</button>
-    </>
+    <div>
+      <Button onClick={requestMessages}>Load messages</Button>
+      {messages.map(message => <div>{message.text}</div>)}
+    </div>
   );
 };
 

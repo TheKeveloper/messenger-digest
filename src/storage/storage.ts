@@ -6,7 +6,6 @@ export async function loadOpenAiConfiguration(): Promise<OpenAiConfiguration> {
   let result = await chrome.storage.local.get({
     [OPEN_AI_CONFIGURATION]: OpenAiConfiguration.DEFAULT_CONFIGURATION,
   });
-  console.log(result);
   return result[OPEN_AI_CONFIGURATION];
 }
 
