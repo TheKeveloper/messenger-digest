@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { ChatMessage, sendRequestCurrentTab } from "./api/api";
-import { Button } from "@mui/material";
+import { Button, Container, List, ListItem, ListItemText } from "@mui/material";
 
 const Popup = () => {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -18,10 +18,15 @@ const Popup = () => {
   }, [setMessages])
   
   return (
-    <div>
+    <Container>
       <Button onClick={requestMessages}>Load messages</Button>
-      {messages.map(message => <div>{message.text}</div>)}
-    </div>
+
+      <List>
+        {messages.map(message => <ListItem>
+          <ListItemText>{message.text}</ListItemText>
+        </ListItem>)}
+      </List>
+    </Container>
   );
 };
 
