@@ -19,9 +19,7 @@ const Options = () => {
   const onSave = useCallback(async () => {
     const curConfig = LoadingState.getLoaded(openAiConfig) ?? {};
     try {
-      console.info("Before save");
       await saveOpenAiConfiguration(curConfig);
-      console.info("Saved: ", curConfig);
     } catch (e) {
       console.warn("Failed to save to local storage", e);
     }
