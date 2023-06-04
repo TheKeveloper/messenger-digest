@@ -1,6 +1,6 @@
 # Messenger Digest
 
-![build](https://github.com/TheKeveloper/https://github.com/TheKeveloper/messenger-digest/workflows/build/badge.svg)
+![build](https://github.com/TheKeveloper/messenger-digest/actions/workflows/build.yml/badge.svg)
 
 A Chrome Extension for summarizing FB messenger chats using the ChatGPT API.
 
