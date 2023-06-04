@@ -6,6 +6,7 @@ import {
   ListItem,
   ListItemText,
   Paper,
+  TextField,
 } from "@mui/material";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { createRoot } from "react-dom/client";
@@ -16,6 +17,9 @@ import { getOpenAiApi } from "./openai/openAiApi";
 import { loadOpenAiConfiguration } from "./storage/storage";
 
 const Popup = () => {
+  const [messageLimit, setMessageLimit] = useState<number | undefined>(
+    undefined
+  );
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [summary, setSummary] = useState<string>("Chat message summary");
 
@@ -41,16 +45,25 @@ const Popup = () => {
     [openAiConfigLoaded]
   );
 
+  const onMessageLimitChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      setMessageLimit(parseInt(event.target.value));
+    },
+    [setMessageLimit]
+  );
+
   const requestMessages = useCallback(async () => {
     try {
       const response = await sendRequestCurrentTab({ type: "messages" });
       if (response != null && response.type === "messages") {
-        setMessages(response.messages);
+        setMessages(
+          response.messages.slice(0, messageLimit ?? response.messages.length)
+        );
       }
     } catch (err) {
       console.error("Error requesting messages", err);
     }
-  }, [setMessages]);
+  }, [setMessages, messageLimit]);
 
   const summarizeMessages = useCallback(async () => {
     if (openAiApi != null) {
@@ -86,6 +99,11 @@ const Popup = () => {
   return (
     <Container style={{ minWidth: "350px" }}>
       <Box>
+        <TextField
+          inputProps={{ inputMode: "numeric", pattern: "[0-9]*" }}
+          label="Max messages"
+          onChange={onMessageLimitChange}
+        />
         <Button onClick={requestMessages}>Load messages</Button>
         <Button
           disabled={openAiApi == null || messages.length === 0}
