@@ -69,7 +69,13 @@ const Popup = () => {
     if (openAiApi != null) {
       const prompt =
         `Summarize the following messages for me: \n` +
-        messages.map((message) => message.text).join("\n");
+        messages
+          .map(
+            (message) =>
+              (message.sender != null ? `${message.sender}: ` : "") +
+              message.text
+          )
+          .join("\n");
 
       console.log();
 
@@ -131,7 +137,10 @@ const Popup = () => {
       <List style={{ maxHeight: "200px", overflow: "auto" }}>
         {messages.map((message) => (
           <ListItem style={{ border: 1 }}>
-            <ListItemText>{message.text}</ListItemText>
+            <ListItemText>
+              {(message.sender != null ? `${message.sender}: ` : "") +
+                message.text}
+            </ListItemText>
           </ListItem>
         ))}
       </List>
